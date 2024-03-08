@@ -11,6 +11,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import com.example.basiccalendarapp.ui.screens.month.MonthScreen
 import com.example.basiccalendarapp.ui.theme.BasicCalendarAppTheme
 
 class MainActivity : ComponentActivity() {
@@ -20,6 +21,7 @@ class MainActivity : ComponentActivity() {
         setContent {
             BasicCalendarAppTheme {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
+                    MonthScreen(padding = innerPadding)
                 }
             }
         }
