@@ -6,7 +6,8 @@ import java.time.Month
 import java.time.MonthDay
 
 data class MonthScreenUiState(
-    val monthName: String = Month.MAY.name,
-    val monthLength: Int = Month.MAY.length(false),
-    val currentDay: Int = 8
+    val monthName: String = LocalDate.now().month.name,
+    val monthLength: Int = LocalDate.now().month.length(LocalDate.now().isLeapYear),
+    val currentDay: Int = LocalDate.now().dayOfMonth,
+    val selectedDay: Int? = null
 )
