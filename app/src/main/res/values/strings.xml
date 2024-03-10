@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">Basic Calendar App</string>
+    <string name="add">Add new schedule entry</string>
 </resources>

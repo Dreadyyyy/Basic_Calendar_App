@@ -3,6 +3,7 @@ package com.example.basiccalendarapp.ui.screens.month
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
@@ -13,8 +14,12 @@ import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -25,10 +30,12 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.basiccalendarapp.R
 import com.example.basiccalendarapp.ui.theme.BasicCalendarAppTheme
 
 @Composable
@@ -41,6 +48,7 @@ fun MonthScreen(
     Scaffold(
         topBar = {
             MonthScreenTopAppBar(
+                currentYear = monthScreenUiState.year,
                 currentMonthName = monthScreenUiState.monthName
             )
         },
@@ -67,6 +75,7 @@ fun MonthScreen(
                 SelectedDayDetails(
                     selectedDay = selectedDay,
                     month = monthScreenUiState.monthName,
+                    addNewScheduleEntry = {},
                     modifier = Modifier
                         .fillMaxSize()
                         .weight(1F)
@@ -106,27 +115,43 @@ fun DayCard(
 fun SelectedDayDetails(
     selectedDay: Int,
     month: String,
+    addNewScheduleEntry: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    Column(
-        verticalArrangement = Arrangement.Top,
-        horizontalAlignment = Alignment.Start,
+    Box(
         modifier = modifier
     ) {
-        Text(text = "$selectedDay $month")
+        Column(
+            verticalArrangement = Arrangement.Top,
+            horizontalAlignment = Alignment.Start,
+        ) {
+            Text(text = "$selectedDay $month")
+        }
+        FloatingActionButton(
+            onClick = addNewScheduleEntry,
+            modifier = Modifier
+                .padding(8.dp)
+                .align(Alignment.BottomEnd)
+        ) {
+            Icon(
+                imageVector = Icons.Filled.Add,
+                contentDescription = stringResource(id = R.string.add)
+            )
+        }
     }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MonthScreenTopAppBar(
+    currentYear: Int,
     currentMonthName: String,
     modifier: Modifier = Modifier
 ) {
     TopAppBar(
         title = {
             Text(
-                text = currentMonthName,
+                text = "$currentMonthName $currentYear",
                 textAlign = TextAlign.Center,
                 modifier = Modifier
                     .fillMaxWidth()
@@ -141,5 +166,13 @@ fun MonthScreenTopAppBar(
 fun MonthScreenPreview() {
     BasicCalendarAppTheme {
         MonthScreen()
+    }
+}
+
+@Preview(showBackground = true, widthDp = 400, heightDp = 400)
+@Composable
+fun SelectedDayDetailsPreview() {
+    BasicCalendarAppTheme {
+        SelectedDayDetails(selectedDay = 1, month = "January", addNewScheduleEntry = { /*TODO*/ })
     }
 }
