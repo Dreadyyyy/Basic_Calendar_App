@@ -10,9 +10,11 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
@@ -36,14 +38,17 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.basiccalendarapp.R
+import com.example.basiccalendarapp.data.ScheduleEntry
+import com.example.basiccalendarapp.ui.AppViewModelProvider
 import com.example.basiccalendarapp.ui.theme.BasicCalendarAppTheme
 
 @Composable
 fun MonthScreen(
-    monthScreenViewModel: MonthScreenViewModel = viewModel(),
+    monthScreenViewModel: MonthScreenViewModel = viewModel(factory = AppViewModelProvider.Factory),
     padding: PaddingValues = PaddingValues(0.dp)
 ) {
     val monthScreenUiState: MonthScreenUiState by monthScreenViewModel.monthScreenUiState.collectAsState()
+    val detailsPaneUiState: DetailsPaneUiState by monthScreenViewModel.detailsPaneUiState.collectAsState()
     val days: List<Int> = (1..monthScreenUiState.monthLength).toList()
     Scaffold(
         topBar = {
@@ -74,6 +79,7 @@ fun MonthScreen(
             monthScreenUiState.selectedDay?.let { selectedDay: Int ->
                 SelectedDayDetails(
                     selectedDay = selectedDay,
+                    detailsPaneUiState.scheduledTasks,
                     month = monthScreenUiState.monthName,
                     addNewScheduleEntry = {},
                     modifier = Modifier
@@ -114,6 +120,7 @@ fun DayCard(
 @Composable
 fun SelectedDayDetails(
     selectedDay: Int,
+    scheduledTasks: List<ScheduleEntry>,
     month: String,
     addNewScheduleEntry: () -> Unit,
     modifier: Modifier = Modifier
@@ -126,6 +133,16 @@ fun SelectedDayDetails(
             horizontalAlignment = Alignment.Start,
         ) {
             Text(text = "$selectedDay $month")
+            LazyColumn(
+                modifier.weight(1F)
+            ) {
+                items(scheduledTasks, {scheduledTask: ScheduleEntry -> scheduledTask.id}) {scheduledTask: ScheduleEntry->
+                    Text(
+                        text = scheduledTask.entryName,
+                        modifier = Modifier.fillMaxWidth()
+                    )
+                }
+            }
         }
         FloatingActionButton(
             onClick = addNewScheduleEntry,
@@ -173,6 +190,11 @@ fun MonthScreenPreview() {
 @Composable
 fun SelectedDayDetailsPreview() {
     BasicCalendarAppTheme {
-        SelectedDayDetails(selectedDay = 1, month = "January", addNewScheduleEntry = { /*TODO*/ })
+        SelectedDayDetails(
+            selectedDay = 1,
+            scheduledTasks = listOf<ScheduleEntry>(),
+            month = "January",
+            addNewScheduleEntry = { /*TODO*/ }
+        )
     }
 }
