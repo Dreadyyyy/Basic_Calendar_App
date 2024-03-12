@@ -1,9 +1,7 @@
 package com.example.basiccalendarapp.ui.screens.month
 
-import android.health.connect.datatypes.units.Length
+import com.example.basiccalendarapp.data.ScheduleEntry
 import java.time.LocalDate
-import java.time.Month
-import java.time.MonthDay
 
 data class MonthScreenUiState(
     val year: Int = LocalDate.now().year,
@@ -12,3 +10,11 @@ data class MonthScreenUiState(
     val currentDay: Int = LocalDate.now().dayOfMonth,
     val selectedDay: Int? = null
 )
+
+data class DetailsPaneUiState(
+    val scheduledTasks: List<ScheduleEntry> = listOf()
+)
+
+fun MonthScreenUiState.extractDate(): String {
+    return "$year-$monthName-$selectedDay"
+}

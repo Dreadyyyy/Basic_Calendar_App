@@ -9,5 +9,5 @@ data class ScheduleEntry(
     val id: Int = 0,
     val timeInMinutes: Int,
     val date: String,
-    val entryName: Int
+    val entryName: String
 )
