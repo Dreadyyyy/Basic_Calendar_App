@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -39,6 +40,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.basiccalendarapp.R
 import com.example.basiccalendarapp.data.ScheduleEntry
+import com.example.basiccalendarapp.data.getShownTime
 import com.example.basiccalendarapp.ui.AppViewModelProvider
 import com.example.basiccalendarapp.ui.theme.BasicCalendarAppTheme
 
@@ -48,7 +50,7 @@ fun MonthScreen(
     padding: PaddingValues = PaddingValues(0.dp)
 ) {
     val monthScreenUiState: MonthScreenUiState by monthScreenViewModel.monthScreenUiState.collectAsState()
-    val detailsPaneUiState: DetailsPaneUiState by monthScreenViewModel.detailsPaneUiState.collectAsState()
+    val scheduledTasks: List<ScheduleEntry> by monthScreenViewModel.getScheduledTasks().collectAsState()
     val days: List<Int> = (1..monthScreenUiState.monthLength).toList()
     Scaffold(
         topBar = {
@@ -79,9 +81,9 @@ fun MonthScreen(
             monthScreenUiState.selectedDay?.let { selectedDay: Int ->
                 SelectedDayDetails(
                     selectedDay = selectedDay,
-                    detailsPaneUiState.scheduledTasks,
+                    scheduledTasks = scheduledTasks,
                     month = monthScreenUiState.monthName,
-                    addNewScheduleEntry = {},
+                    addNewScheduleEntry = monthScreenViewModel::insertScheduleEntry,
                     modifier = Modifier
                         .fillMaxSize()
                         .weight(1F)
@@ -134,13 +136,22 @@ fun SelectedDayDetails(
         ) {
             Text(text = "$selectedDay $month")
             LazyColumn(
-                modifier.weight(1F)
+                modifier
+                    .weight(1F)
             ) {
                 items(scheduledTasks, {scheduledTask: ScheduleEntry -> scheduledTask.id}) {scheduledTask: ScheduleEntry->
-                    Text(
-                        text = scheduledTask.entryName,
-                        modifier = Modifier.fillMaxWidth()
-                    )
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .weight(1F)
+                    ) {
+                        Text(text = scheduledTask.getShownTime())
+                        Text(
+                            text = scheduledTask.entryName,
+                            textAlign = TextAlign.Center,
+                            modifier = Modifier.weight(1F)
+                        )
+                    }
                 }
             }
         }
@@ -192,7 +203,13 @@ fun SelectedDayDetailsPreview() {
     BasicCalendarAppTheme {
         SelectedDayDetails(
             selectedDay = 1,
-            scheduledTasks = listOf<ScheduleEntry>(),
+            scheduledTasks = listOf<ScheduleEntry>(
+                ScheduleEntry(
+                    timeInMinutes = 0,
+                    date = "2024-JANUARY-1",
+                    entryName = "Syrus servus severus est"
+                )
+            ),
             month = "January",
             addNewScheduleEntry = { /*TODO*/ }
         )
