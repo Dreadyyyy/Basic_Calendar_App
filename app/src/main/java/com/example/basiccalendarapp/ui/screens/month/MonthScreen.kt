@@ -42,15 +42,18 @@ import com.example.basiccalendarapp.R
 import com.example.basiccalendarapp.data.ScheduleEntry
 import com.example.basiccalendarapp.data.getShownTime
 import com.example.basiccalendarapp.ui.AppViewModelProvider
+import com.example.basiccalendarapp.ui.navigation.CalendarScreens
 import com.example.basiccalendarapp.ui.theme.BasicCalendarAppTheme
 
 @Composable
 fun MonthScreen(
     monthScreenViewModel: MonthScreenViewModel = viewModel(factory = AppViewModelProvider.Factory),
+    changeEntryDetails: (String) -> Unit,
     padding: PaddingValues = PaddingValues(0.dp)
 ) {
     val monthScreenUiState: MonthScreenUiState by monthScreenViewModel.monthScreenUiState.collectAsState()
-    val scheduledTasks: List<ScheduleEntry> by monthScreenViewModel.getScheduledTasks().collectAsState()
+    val scheduledTasks: List<ScheduleEntry> by monthScreenViewModel.getScheduledTasks()
+        .collectAsState()
     val days: List<Int> = (1..monthScreenUiState.monthLength).toList()
     Scaffold(
         topBar = {
@@ -84,6 +87,7 @@ fun MonthScreen(
                     scheduledTasks = scheduledTasks,
                     month = monthScreenUiState.monthName,
                     addNewScheduleEntry = monthScreenViewModel::insertScheduleEntry,
+                    changeEntryDetails = changeEntryDetails,
                     modifier = Modifier
                         .fillMaxSize()
                         .weight(1F)
@@ -125,6 +129,7 @@ fun SelectedDayDetails(
     scheduledTasks: List<ScheduleEntry>,
     month: String,
     addNewScheduleEntry: () -> Unit,
+    changeEntryDetails: (String) -> Unit,
     modifier: Modifier = Modifier
 ) {
     Box(
@@ -139,19 +144,13 @@ fun SelectedDayDetails(
                 modifier
                     .weight(1F)
             ) {
-                items(scheduledTasks, {scheduledTask: ScheduleEntry -> scheduledTask.id}) {scheduledTask: ScheduleEntry->
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .weight(1F)
-                    ) {
-                        Text(text = scheduledTask.getShownTime())
-                        Text(
-                            text = scheduledTask.entryName,
-                            textAlign = TextAlign.Center,
-                            modifier = Modifier.weight(1F)
-                        )
-                    }
+                items(
+                    scheduledTasks,
+                    { scheduledTask: ScheduleEntry -> scheduledTask.id }) { scheduledTask: ScheduleEntry ->
+                    ScheduleEntryCard(
+                        time = scheduledTask.getShownTime(),
+                        name = scheduledTask.entryName,
+                        changeEntryDetails = { changeEntryDetails("${CalendarScreens.ChangeEntryScreen.name}/${scheduledTask.id}") })
                 }
             }
         }
@@ -164,6 +163,30 @@ fun SelectedDayDetails(
             Icon(
                 imageVector = Icons.Filled.Add,
                 contentDescription = stringResource(id = R.string.add)
+            )
+        }
+    }
+}
+
+@Composable
+fun ScheduleEntryCard(
+    time: String,
+    name: String,
+    changeEntryDetails: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    Card(
+        modifier = Modifier.clickable(onClick = changeEntryDetails)
+    ) {
+        Row(
+            modifier = Modifier
+                .fillMaxSize()
+        ) {
+            Text(text = time)
+            Text(
+                text = name,
+                textAlign = TextAlign.Center,
+                modifier = Modifier.weight(1F)
             )
         }
     }
@@ -193,7 +216,7 @@ fun MonthScreenTopAppBar(
 @Composable
 fun MonthScreenPreview() {
     BasicCalendarAppTheme {
-        MonthScreen()
+        MonthScreen(changeEntryDetails = {})
     }
 }
 
@@ -211,6 +234,7 @@ fun SelectedDayDetailsPreview() {
                 )
             ),
             month = "January",
+            changeEntryDetails = {},
             addNewScheduleEntry = { /*TODO*/ }
         )
     }
