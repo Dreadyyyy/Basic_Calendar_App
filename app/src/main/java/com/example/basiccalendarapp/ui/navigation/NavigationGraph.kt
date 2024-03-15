@@ -1,5 +1,6 @@
 package com.example.basiccalendarapp.ui.navigation
 
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
@@ -11,18 +12,22 @@ import com.example.basiccalendarapp.ui.screens.month.MonthScreen
 
 @Composable
 fun NavigationGraph(
-    navHostController: NavHostController
+    navHostController: NavHostController,
+    padding: PaddingValues
 ) {
     NavHost(
         navController = navHostController,
-        startDestination = CalendarScreens.MonthScreen.name
+        startDestination = CalendarScreens.MonthScreen.name,
     ) {
         composable(route = CalendarScreens.MonthScreen.name) {
-            MonthScreen(changeEntryDetails = { destination: String ->
-                navHostController.navigate(
-                    destination
-                )
-            })
+            MonthScreen(
+                changeEntryDetails = { destination: String ->
+                    navHostController.navigate(
+                        destination
+                    )
+                },
+                padding = padding
+            )
         }
         composable(
             route = "${CalendarScreens.ChangeEntryScreen.name}/{id}",
@@ -32,7 +37,10 @@ fun NavigationGraph(
                 }
             )
         ) {
-            ChangeEntryScreen(navigateBack = navHostController::navigateUp)
+            ChangeEntryScreen(
+                navigateBack = navHostController::navigateUp,
+                padding = padding
+            )
         }
     }
 }

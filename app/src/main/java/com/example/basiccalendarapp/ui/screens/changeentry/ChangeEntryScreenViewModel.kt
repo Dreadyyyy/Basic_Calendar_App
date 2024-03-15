@@ -52,13 +52,13 @@ class ChangeEntryScreenViewModel(
     }
     fun increaseMinutes() {
         minutesAmount++
-        minutesAmount %= 24
+        minutesAmount %= 60
         updateTime()
     }
     fun decreaseMinutes() {
         minutesAmount--
-        if (minutesAmount < 0) minutesAmount = 23
-        minutesAmount %= 24
+        if (minutesAmount < 0) minutesAmount = 59
+        minutesAmount %= 60
         updateTime()
     }
 

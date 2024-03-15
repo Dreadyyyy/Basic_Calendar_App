@@ -155,7 +155,10 @@ fun SelectedDayDetails(
             }
         }
         FloatingActionButton(
-            onClick = addNewScheduleEntry,
+            onClick = {
+                addNewScheduleEntry()
+//                changeEntryDetails("${CalendarScreens.ChangeEntryScreen.name}/${scheduledTasks.last().id}")
+            },
             modifier = Modifier
                 .padding(8.dp)
                 .align(Alignment.BottomEnd)
@@ -176,7 +179,7 @@ fun ScheduleEntryCard(
     modifier: Modifier = Modifier
 ) {
     Card(
-        modifier = Modifier.clickable(onClick = changeEntryDetails)
+        modifier = modifier.clickable(onClick = changeEntryDetails)
     ) {
         Row(
             modifier = Modifier

@@ -11,5 +11,8 @@ fun BasicCalendarApp(
     padding: PaddingValues
 ) {
     val navHostController: NavHostController = rememberNavController()
-    NavigationGraph(navHostController = navHostController)
+    NavigationGraph(
+        navHostController = navHostController,
+        padding = padding
+    )
 }
