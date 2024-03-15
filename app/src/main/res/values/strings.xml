@@ -1,4 +1,8 @@
 <resources>
     <string name="app_name">Basic Calendar App</string>
     <string name="add">Add new schedule entry</string>
+    <string name="decrease_hours">Decrease hours</string>
+    <string name="increase_hours">Increase hours</string>
+    <string name="decrease_minutes">Decrease minutes</string>
+    <string name="increase_minutes">Increase minutes</string>
 </resources>
