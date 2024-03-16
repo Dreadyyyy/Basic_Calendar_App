@@ -14,7 +14,8 @@ object AppViewModelProvider {
     val Factory = viewModelFactory {
         initializer {
             MonthScreenViewModel(
-                basicCalendarApplication().container.scheduleRepository
+                basicCalendarApplication().container.scheduleRepository,
+                basicCalendarApplication().container.alarmScheduler
             )
         }
         initializer {
