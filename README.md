@@ -1,1 +1,1 @@
-Basic calendar app, currently in development. Done for learning purposes
+Basic calendar app. Done for learning purposes
